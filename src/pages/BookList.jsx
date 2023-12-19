@@ -6,10 +6,10 @@ const BookList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8000/book")
+    fetch("https://eak022.github.io/databooks.github.io/db.json")
     .then((res) => res.json())
     .then((data) => {
-      setBookData(data);
+      setBookData(data.book);
     })
     .catch((err) => {
       console.error(err);

@@ -24,7 +24,7 @@ const AddBook = () => {
       genre: book.genre,
       image: book.image,
     };
-    fetch("http://localhost:8000/book", {
+    fetch("https://eak022.github.io/databooks.github.io/db.json/book", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(bookData),

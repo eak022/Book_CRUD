@@ -13,7 +13,7 @@ const EditBook = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8000/book/" + id)
+    fetch("https://eak022.github.io/databooks.github.io/db.json/book/" + id)
       .then((res) => res.json())
       .then((data) => {
         setBook(data);

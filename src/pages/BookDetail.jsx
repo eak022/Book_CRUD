@@ -6,10 +6,13 @@ const BookDetail = () => {
   const [bookData, setBookData] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:8000/book/" + id)
+    fetch("https://eak022.github.io/databooks.github.io/db.json")
       .then((res) => res.json())
       .then((data) => {
-        setBookData(data);
+        // ค้นหาหนังสือตาม ID ที่รับมาจาก params
+        const book = data.find((book) => book.id === parseInt(id));
+        // ตั้งค่าข้อมูลหนังสือ
+        setBookData(book || {});
       })
       .catch((err) => {
         console.error(err);
@@ -24,7 +27,7 @@ const BookDetail = () => {
             <div className="card-title">
               <h2>Book Detail</h2>
             </div>
-            {bookData && (
+            {bookData && Object.keys(bookData).length > 0 && (
               <div className="card-body">
                 <img src={bookData.image} alt="book" />
                 <div className="card-text">
