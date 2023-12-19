@@ -7,34 +7,43 @@ const BookList = () => {
 
   useEffect(() => {
     fetch("https://eak022.github.io/databooks.github.io/db.json")
-    .then((res) => res.json())
-    .then((data) => {
-      setBookData(data.book);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        setBookData(data.book);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   const loadEdit = (id) => {
-    navigate("/book/edit/" + id);
+    navigate(`/book/edit/${id}`);
   };
 
   const loadDetail = (id) => {
-    navigate("/book/detail/" + id);
+    navigate(`/book/detail/${id}`);
   };
 
   const removeBook = (id) => {
     if (window.confirm("Do you want to remove?")) {
-      fetch("http://localhost:8000/book" + id, {
-        method: "DELETE",
-      })
-        .then((res) => {
+      fetch(`https://eak022.github.io/databooks.github.io/db.json`)
+        .then((res) => res.json())
+        .then((data) => {
+          const updatedBooks = data.book.filter((item) => item.id !== id);
+          return fetch("https://eak022.github.io/databooks.github.io/db.json", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ book: updatedBooks }),
+          });
+        })
+        .then(() => {
           alert("Remove successfully");
-          window.location.reload();
+          setBookData((prevData) => prevData.filter((item) => item.id !== id));
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         });
     }
   };
@@ -72,24 +81,24 @@ const BookList = () => {
                     <td>{item.price}</td>
                     <td>{item.genre}</td>
                     <td>
-                      <a
+                      <button
                         className="btn btn-success"
                         onClick={() => loadEdit(item.id)}
                       >
                         Edit
-                      </a>
-                      <a
+                      </button>
+                      <button
                         className="btn btn-danger"
                         onClick={() => removeBook(item.id)}
                       >
                         Remove
-                      </a>
-                      <a
+                      </button>
+                      <button
                         className="btn btn-primary"
                         onClick={() => loadDetail(item.id)}
                       >
                         Detail
-                      </a>
+                      </button>
                     </td>
                   </tr>
                 ))}
