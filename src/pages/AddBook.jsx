@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 const AddBook = () => {
@@ -9,6 +9,7 @@ const AddBook = () => {
     genre: "",
     image: "https://source.unsplash.com/random/200x200/?book",
   });
+  const [bookId, setBookId] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,21 +18,40 @@ const AddBook = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const bookData = {
-      name: book.name,
-      author: book.author,
-      price: book.price,
-      genre: book.genre,
-      image: book.image,
-    };
-    fetch("https://eak022.github.io/databooks.github.io/db.json/book", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(bookData),
-    })
-      .then((res) => {
-        alert("Save successfully");
-        navigate("/");
+  
+    fetch("https://tiny-pear-caiman-hem.cyclic.app/")
+      .then((res) => res.json())
+      .then((data) => {
+        let newBookId;
+        if (data.length > 0) {
+          const lastBookId = data[data.length - 1].id;
+          newBookId = lastBookId + 1;
+        } else {
+          newBookId = 1;
+        }
+  
+        const bookData = {
+          id: newBookId, // ใช้ไอดีใหม่ที่ได้จากการคำนวณ
+          name: book.name,
+          author: book.author,
+          price: parseFloat(book.price),
+          genre: book.genre,
+          image: book.image,
+        };
+  
+        fetch("https://tiny-pear-caiman-hem.cyclic.app/books", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(bookData),
+        })
+          .then((res) => res.json())
+          .then(() => {
+            alert("Save successfully");
+            navigate("/");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);

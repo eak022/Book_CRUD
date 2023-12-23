@@ -6,10 +6,10 @@ const BookList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("https://eak022.github.io/databooks.github.io/db.json")
+    fetch(`https://tiny-pear-caiman-hem.cyclic.app/`)
       .then((res) => res.json())
       .then((data) => {
-        setBookData(data.book);
+        setBookData(data);
       })
       .catch((err) => {
         console.error(err);
@@ -26,24 +26,27 @@ const BookList = () => {
 
   const removeBook = (id) => {
     if (window.confirm("Do you want to remove?")) {
-      fetch(`https://eak022.github.io/databooks.github.io/db.json`)
-        .then((res) => res.json())
-        .then((data) => {
-          const updatedBooks = data.book.filter((item) => item.id !== id);
-          return fetch("https://eak022.github.io/databooks.github.io/db.json", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ book: updatedBooks }),
-          });
+      fetch(`https://tiny-pear-caiman-hem.cyclic.app/books/${id}`, {
+        method: "DELETE", // หรือ PUT ตามการกำหนด API ของคุณ
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }), // ส่งข้อมูลลบไปยังเซิร์ฟเวอร์
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return res.json();
         })
         .then(() => {
+          const updatedBooks = bookData.filter((item) => item.id !== id);
+          setBookData(updatedBooks);
           alert("Remove successfully");
-          setBookData((prevData) => prevData.filter((item) => item.id !== id));
         })
         .catch((err) => {
           console.error(err);
+          // ใส่โค้ดสำหรับการจัดการข้อผิดพลาดหรือแจ้งเตือนผู้ใช้ในกรณีที่ไม่สามารถลบได้
         });
     }
   };
@@ -71,7 +74,7 @@ const BookList = () => {
                 <td>Actions</td>
               </tr>
             </thead>
-            <tbody>
+            <tbody>             
               {bookData &&
                 bookData.map((item) => (
                   <tr key={item.id}>

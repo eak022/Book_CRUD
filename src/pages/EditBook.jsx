@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 
 const EditBook = () => {
@@ -13,10 +13,10 @@ const EditBook = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("https://eak022.github.io/databooks.github.io/db.json/book/" + id)
+    fetch(`https://tiny-pear-caiman-hem.cyclic.app/books/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setBook(data);
+        setBook(data); // ตั้งค่าข้อมูลหนังสือที่ได้รับมาเป็นค่าเริ่มต้นใน state
       })
       .catch((err) => {
         console.error(err);
@@ -32,23 +32,28 @@ const EditBook = () => {
     const bookData = {
       name: book.name,
       author: book.author,
-      price: book.price,
+      price: parseFloat(book.price), // แปลงเป็นตัวเลขที่เป็นทศนิยม
       genre: book.genre,
       image: book.image,
     };
-    fetch("http://localhost:8000/book/" + id, {
+    fetch(`https://tiny-pear-caiman-hem.cyclic.app/books/${id}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(bookData),
     })
       .then((res) => {
-        alert("Save successfully");
-        navigate("/");
+        if (res.ok) {
+          alert("Save successfully");
+          navigate("/"); // เมื่อบันทึกเสร็จสิ้นให้นำไปยังหน้าแรก
+        } else {
+          throw new Error("Failed to save");
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
 
   return (
     <div>

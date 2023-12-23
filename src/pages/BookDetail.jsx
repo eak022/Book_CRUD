@@ -6,23 +6,15 @@ const BookDetail = () => {
   const [bookData, setBookData] = useState({});
 
   useEffect(() => {
-    fetch(`https://eak022.github.io/databooks.github.io/db.json`) // ลบ query parameter ที่ส่ง id ออก เพราะที่นี่เราจะดึงข้อมูลทั้งหมด
+    fetch(`https://tiny-pear-caiman-hem.cyclic.app/books/${id}`) // ส่ง ID ของหนังสือไปยัง API endpoint
       .then((res) => res.json())
       .then((data) => {
-        console.log(data); // Debug: ดูข้อมูลที่ได้รับมาจาก API ไม่มีปัญหา
+        console.log(data); // Debug: ดูข้อมูลที่ได้รับมาจาก API
 
-        // Assuming data structure is an object with 'books' as an array of books
-        if (data && data.book && Array.isArray(data.book)) {
-          const book = data.book.find((book) => book.id === parseInt(id));
-          if (book) {
-            console.log(book); // Debug: ดูข้อมูลหนังสือที่ได้หลังจากการค้นหา
-            setBookData(book);
-          } else {
-            // Handle if the book with the specified ID is not found
-            console.error("Book not found");
-          }
+        if (data) {
+          setBookData(data); // ตั้งค่าข้อมูลหนังสือใน state
         } else {
-          console.error("Invalid data structure or missing books array");
+          console.error("Book not found");
         }
       })
       .catch((err) => {
